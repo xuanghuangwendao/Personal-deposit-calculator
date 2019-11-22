@@ -1075,10 +1075,6 @@ namespace Personal_deposit_calculator
         }
 
 
-        private void buttonReset_Click(object sender, EventArgs e)
-        {
-
-        }
 
         private void is_Auto(object sender, EventArgs e)
         {
@@ -1092,6 +1088,15 @@ namespace Personal_deposit_calculator
             {
                 t.ReadOnly = false;
             }
+        }
+        private void buttonReset_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonCalculate_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

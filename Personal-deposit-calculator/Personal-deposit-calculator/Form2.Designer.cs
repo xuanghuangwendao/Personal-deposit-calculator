@@ -76,8 +76,14 @@
             this.comboBoxType.FormattingEnabled = true;
             this.comboBoxType.Items.AddRange(new object[] {
             "人民币",
+            "英镑",
+            "澳大利亚元",
+            "加拿大元",
             "美元",
-            "日元"});
+            "日元",
+            "欧元",
+            "瑞士法郎",
+            "港币"});
             this.comboBoxType.Location = new System.Drawing.Point(157, 55);
             this.comboBoxType.Name = "comboBoxType";
             this.comboBoxType.Size = new System.Drawing.Size(121, 23);

@@ -69,7 +69,7 @@ namespace Personal_deposit_calculator
             c1.Hide();
             move_ComboBox("起存日期4", 0, 0, 60);
             ComboBox c2 = (ComboBox)findC("起存日期4");
-            for(int i = 1; i <= 12; i++)
+            for (int i = 1; i <= 12; i++)
             {
                 c2.Items.Add(i);
             }
@@ -103,7 +103,7 @@ namespace Personal_deposit_calculator
 
             move_ComboBox("结束日期6", X2, y, 60);
             ComboBox c6 = (ComboBox)findC("结束日期6");
-           
+
             for (int i = 1; i <= 31; i++)
             {
                 c6.Items.Add(i);
@@ -249,6 +249,7 @@ namespace Personal_deposit_calculator
 
 
             c1.SelectedIndexChanged += new System.EventHandler(choose1);
+            index = Math.Min(index, c1.Items.Count - 1);
             c1.SelectedIndex = index;
 
         }
@@ -283,15 +284,17 @@ namespace Personal_deposit_calculator
                 move_ComboBox("期限种类2", X2, y);
                 use.Add("期限种类2");
                 ComboBox c = (ComboBox)this.Controls["期限种类2"];
+                c.SelectedIndexChanged -= new System.EventHandler(choose2);
                 c.DropDownStyle = ComboBoxStyle.DropDownList;
                 int index = c.SelectedIndex;
-                if(index == -1)
+                if (index == -1)
                 {
                     index = 0;
                 }
                 c.Items.Clear();
                 c.Items.Add("选择期限种类");
-                c.SelectedIndex = index;
+
+                c.SelectedIndex = Math.Min(index, c.Items.Count - 1);
 
                 y += difY;
                 move_Label("利率输入选择1", "利率输入选择", X1, y);
@@ -352,7 +355,7 @@ namespace Personal_deposit_calculator
             }
             else if (type.Equals("活期"))
             {
-                
+
                 move_Label("起存日期1", "起存日期", X1, y + difY / 2);
                 use.Add("起存日期1");
 
@@ -380,7 +383,7 @@ namespace Personal_deposit_calculator
                 use.Add("起存日期7");
 
                 y += difY;
-                
+
                 move_Label("结束日期1", "结束日期", X1, y + difY / 2);
                 use.Add("结束日期1");
 
@@ -464,7 +467,8 @@ namespace Personal_deposit_calculator
                 use.Add("本息合计3");
 
             }
-            else if (type.Equals("定活两便")){
+            else if (type.Equals("定活两便"))
+            {
 
                 move_Label("存款期限1", "存款期限", X1, y + difY / 2);
                 use.Add("存款期限1");
@@ -565,6 +569,8 @@ namespace Personal_deposit_calculator
                 c.Items.Add("一年");
                 c.Items.Add("三年");
                 c.Items.Add("五年");
+                index = Math.Min(index, c.Items.Count - 1);
+                c.SelectedIndexChanged -= new System.EventHandler(choose2);
                 c.SelectedIndex = index;
 
                 y += difY;
@@ -612,7 +618,7 @@ namespace Personal_deposit_calculator
                 move_Label("每月利息3", "元", 0, 0, findC("每月利息2"), true);
                 use.Add("每月利息3");
 
-                y += difY; 
+                y += difY;
                 move_Label("累计利息1", "累计利息", X1, y);
                 use.Add("累计利息1");
 
@@ -654,6 +660,7 @@ namespace Personal_deposit_calculator
                 c.Items.Add("一年");
                 c.Items.Add("三年");
                 c.Items.Add("五年");
+                index = Math.Min(index, c.Items.Count - 1);
                 c.SelectedIndex = index;
 
                 y += difY;
@@ -752,6 +759,7 @@ namespace Personal_deposit_calculator
                 c.Items.Add("一年");
                 c.Items.Add("三年");
                 c.Items.Add("五年");
+                index = Math.Min(index, c.Items.Count - 1);
                 c.SelectedIndex = index;
 
                 y += difY;
@@ -831,6 +839,7 @@ namespace Personal_deposit_calculator
                 c.Items.Add("一年");
                 c.Items.Add("三年");
                 c.Items.Add("五年");
+                index = Math.Min(index, c.Items.Count - 1);
                 c.SelectedIndex = index;
 
                 y += difY;
@@ -896,7 +905,7 @@ namespace Personal_deposit_calculator
                 string name = temp.Name;
                 bool flag = false;
                 System.Console.WriteLine(name);
-                foreach(string has in use)
+                foreach (string has in use)
                 {
                     if (name.Equals(has))
                     {
@@ -920,6 +929,226 @@ namespace Personal_deposit_calculator
 
         }
 
+        private void init2()
+        {
+            all_Hide();
+            init_Show();
+
+            int y = this.Controls["币种1"].Location.Y;
+            y += difY;
+            List<string> use = new List<string>();
+            use.Clear();
+            use.Add("标题");
+            use.Add("币种1");
+            use.Add("币种2");
+            use.Add("计算");
+            use.Add("重置");
+            use.Add("自动");
+            use.Add("手动");
+
+            move_Label("期限种类1", "期限种类", X1, y);
+            use.Add("期限种类1");
+
+            move_ComboBox("期限种类2", X2, y);
+            use.Add("期限种类2");
+            ComboBox c = (ComboBox)this.Controls["期限种类2"];
+            c.DropDownStyle = ComboBoxStyle.DropDownList;
+            int index = c.SelectedIndex;
+            if (index == -1)
+            {
+                index = 0;
+            }
+            c.Items.Clear();
+            c.Items.Add("活期");
+            c.Items.Add("一个月");
+            c.Items.Add("三个月");
+            c.Items.Add("六个月");
+            c.Items.Add("一年");
+            c.Items.Add("两年");
+            c.Items.Add("七天通知");
+            index = Math.Min(index, c.Items.Count - 1);
+            c.SelectedIndexChanged -= new System.EventHandler(choose1);
+            c.SelectedIndexChanged += new System.EventHandler(choose2);
+            c.SelectedIndex = index;
+
+
+        }
+        private void choose2(Object sender, EventArgs args)
+        {
+            string type0 = (string)((ComboBox)this.Controls["币种2"]).SelectedItem;
+            if (type0.Equals("人民币"))
+            {
+                return;
+            }
+
+
+            int y = this.Controls["期限种类1"].Location.Y;
+            y += difY;
+            List<string> use = new List<string>();
+            use.Clear();
+            use.Add("标题");
+            use.Add("币种1");
+            use.Add("币种2");
+            use.Add("计算");
+            use.Add("重置");
+            use.Add("自动");
+            use.Add("手动");
+            use.Add("期限种类1");
+            use.Add("期限种类2");
+
+            string type = (string)((ComboBox)this.Controls["期限种类2"]).SelectedItem;
+
+            if (type.Equals("活期"))
+            {
+                create_Label("存款金额1", "存款金额", X1, y);
+                use.Add("存款金额1");
+                create_TextBox("存款金额2", X2, y);
+                use.Add("存款金额2");
+                create_Label("存款金额3", "元", 0, 0, findC("存款金额2"), true);
+                use.Add("存款金额3");
+
+                y += difY;
+                move_Label("利率输入选择1", "利率输入选择", X1, y);
+                use.Add("利率输入选择1");
+
+                this.radioButton1.Location = new_Point(findC("利率输入选择1"));
+                this.radioButton1.Show();
+
+                this.radioButton2.Location = new_Point(radioButton1);
+                this.radioButton2.Show();
+                y += difY;
+
+                move_Label("存款利率1", "存款利率（年利率）", X1, y);
+                use.Add("存款利率1");
+
+                move_textBox("存款利率2", 0, 0, 50, findC("存款利率1"));
+                use.Add("存款利率2");
+                if (this.radioButton1.Checked)
+                {
+                    TextBox t = (TextBox)findC("存款利率2");
+                    t.ReadOnly = true;
+                }
+
+                move_Label("存款利率3", "%", 0, 0, findC("存款利率2"), true);
+                use.Add("存款利率3");
+
+                this.radioButton1.Checked = true;
+
+                y += difY;
+                this.buttonCalculate.Location = new Point(X1 + 20, y);
+                this.buttonCalculate.Show();
+                this.buttonReset.Location = new Point(X2 + 50, y);
+                this.buttonReset.Show();
+
+                y += difY;
+                y += difY;
+
+                move_Label("存款利息1", "存款利息", X1, y);
+                use.Add("存款利息1");
+
+                move_textBox("存款利息2", X2, y);
+                use.Add("存款利息2");
+
+                move_Label("存款利息3", "元", 0, 0, findC("存款利息2"), true);
+                use.Add("存款利息3");
+
+                y += difY;
+
+                move_Label("本息合计1", "本息合计", X1, y);
+                use.Add("本息合计1");
+
+                move_textBox("本息合计2", X2, y);
+                use.Add("本息合计2");
+
+                move_Label("本息合计3", "元", 0, 0, findC("本息合计2"), true);
+                use.Add("本息合计3");
+
+
+            }
+            else
+            {
+                move_Label("利率输入选择1", "利率输入选择", X1, y);
+                use.Add("利率输入选择1");
+
+                this.radioButton1.Location = new_Point(findC("利率输入选择1"));
+                this.radioButton1.Show();
+
+                this.radioButton2.Location = new_Point(radioButton1);
+                this.radioButton2.Show();
+                y += difY;
+
+                move_Label("存款利率1", "存款利率（年利率）", X1, y);
+                use.Add("存款利率1");
+
+                move_textBox("存款利率2", 0, 0, 50, findC("存款利率1"));
+                use.Add("存款利率2");
+                if (this.radioButton1.Checked)
+                {
+                    TextBox t = (TextBox)findC("存款利率2");
+                    t.ReadOnly = true;
+                }
+
+                move_Label("存款利率3", "%", 0, 0, findC("存款利率2"), true);
+                use.Add("存款利率3");
+
+                this.radioButton1.Checked = true;
+
+                y += difY;
+                this.buttonCalculate.Location = new Point(X1 + 20, y);
+                this.buttonCalculate.Show();
+                this.buttonReset.Location = new Point(X2 + 50, y);
+                this.buttonReset.Show();
+
+                y += difY;
+                y += difY;
+
+                move_Label("存款利息1", "存款利息", X1, y);
+                use.Add("存款利息1");
+
+                move_textBox("存款利息2", X2, y);
+                use.Add("存款利息2");
+
+                move_Label("存款利息3", "元", 0, 0, findC("存款利息2"), true);
+                use.Add("存款利息3");
+
+                y += difY;
+
+                move_Label("本息合计1", "本息合计", X1, y);
+                use.Add("本息合计1");
+
+                move_textBox("本息合计2", X2, y);
+                use.Add("本息合计2");
+
+                move_Label("本息合计3", "元", 0, 0, findC("本息合计2"), true);
+                use.Add("本息合计3");
+
+            }
+
+            foreach (Control temp in this.Controls)
+            {
+                string name = temp.Name;
+                bool flag = false;
+                System.Console.WriteLine(name);
+                foreach (string has in use)
+                {
+                    if (name.Equals(has))
+                    {
+                        flag = true;
+                        break;
+                    }
+                }
+                if (!flag)
+                {
+                    temp.Hide();
+                }
+                else
+                {
+                    temp.Show();
+                }
+            }
+
+
+        }
 
         public void move_Label(string name, string text, int x, int y, Control control = null, bool correct = false)
         {
@@ -1022,7 +1251,7 @@ namespace Personal_deposit_calculator
         {
             ComboBox comboBox = new ComboBox();
             comboBox.Name = name;
-            comboBox.DropDownStyle = ComboBoxStyle.DropDownList; 
+            comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox.Size = new Size(comboBox.Size.Width - sub_Width, comboBox.Size.Height);
             if (control != null)
             {
@@ -1069,17 +1298,17 @@ namespace Personal_deposit_calculator
             }
             else
             {
-                all_Hide();
-                init_Show();
+                init2();
             }
         }
+
 
 
 
         private void is_Auto(object sender, EventArgs e)
         {
             TextBox t = (TextBox)this.Controls["存款利率2"];
-           
+
             if (this.radioButton1.Checked)
             {
                 t.ReadOnly = true;

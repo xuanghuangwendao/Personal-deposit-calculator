@@ -121,6 +121,7 @@
             this.buttonCalculate.TabIndex = 6;
             this.buttonCalculate.Text = "计算";
             this.buttonCalculate.UseVisualStyleBackColor = true;
+            this.buttonCalculate.Click += new System.EventHandler(this.buttonCalculate_Click);
             // 
             // radioButton3
             // 

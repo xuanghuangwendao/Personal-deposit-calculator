@@ -62,6 +62,8 @@ namespace Personal_deposit_calculator
             this.comboBoxType.Show();
             this.buttonCalculate.Show();
             this.buttonReset.Show();
+            this.radioButton1.Show();
+            this.radioButton2.Show();
             addition1();
         }
 
@@ -71,8 +73,8 @@ namespace Personal_deposit_calculator
             int y = 100;
             move_ComboBox("起存日期2", X2, y, 60);
             ComboBox c1 = (ComboBox)findC("起存日期2");
-            c1.Items.Add("2018");
-            c1.Items.Add("2019");
+            c1.Items.Add(2018);
+            c1.Items.Add(2019);
             c1.SelectedIndex = 0;
             c1.Hide();
             move_ComboBox("起存日期4", 0, 0, 60);
@@ -95,8 +97,8 @@ namespace Personal_deposit_calculator
 
             move_ComboBox("结束日期2", X2, y, 60);
             ComboBox c4 = (ComboBox)findC("结束日期2");
-            c4.Items.Add("2018");
-            c4.Items.Add("2019");
+            c4.Items.Add(2018);
+            c4.Items.Add(2019);
             c4.SelectedIndex = 0;
             c4.Hide();
 
@@ -222,6 +224,8 @@ namespace Personal_deposit_calculator
             this.comboBoxType.Show();
             this.buttonCalculate.Show();
             this.buttonReset.Show();
+            this.radioButton1.Show();
+            this.radioButton2.Show();
         }
 
         public void init1()
@@ -1082,6 +1086,14 @@ namespace Personal_deposit_calculator
             }
             else
             {
+                move_Label("存款金额1", "存款金额", X1, y);
+                use.Add("存款金额1");
+                move_textBox("存款金额2", X2, y);
+                use.Add("存款金额2");
+                move_Label("存款金额3", "元", 0, 0, findC("存款金额2"), true);
+                use.Add("存款金额3");
+
+                y += difY;
                 move_Label("利率输入选择1", "利率输入选择", X1, y);
                 use.Add("利率输入选择1");
 
@@ -1260,6 +1272,11 @@ namespace Personal_deposit_calculator
             textBox.Location = new Point(x, y);
 
             this.Controls.Add(textBox);
+            if(name.Equals("存款期限2") || name.Equals("存款期限4") || name.Equals("存款期限6"))
+            {
+               
+                this.Leave += new System.EventHandler(kkk);
+            }
         }
 
         public void create_ComboBox(string name, int x, int y, int sub_Width = 0, Control control = null, bool correct = false)
@@ -1374,7 +1391,10 @@ namespace Personal_deposit_calculator
                         }
                         else
                         {
+                            TextBox tb = (TextBox)this.Controls["存款期限2"];
+                            tb.Text = "";
                             MessageBox.Show("请输入正确年份");
+                            
                             flag = false;
                         }
                         int month;
@@ -1385,6 +1405,8 @@ namespace Personal_deposit_calculator
                         else
                         {
                             MessageBox.Show("请输入正确月份");
+                            TextBox tb = (TextBox)this.Controls["存款期限4"];
+                            tb.Text = "";
                             flag = false;
                         }
 
@@ -1396,6 +1418,8 @@ namespace Personal_deposit_calculator
                         else
                         {
                             MessageBox.Show("请输入正确日数");
+                            TextBox tb = (TextBox)this.Controls["存款期限6"];
+                            tb.Text = "";
                             flag = false;
                         }
 
@@ -1879,21 +1903,32 @@ namespace Personal_deposit_calculator
 
         private void choose_Rate(object sender,EventArgs e)
         {
-            this.radioButton2.Checked = true;
+            this.radioButton1.Checked = false;
             this.radioButton1.Checked = true;
         }
         private void buttonReset_Click(object sender, EventArgs e)
         {
             ComboBox c = (ComboBox)this.Controls["币种2"];
             string type = (string)c.SelectedItem;
-            if (type.Equals("人民币"))
+
+            foreach (Control control in this.Controls)
             {
-                init1();
+                if(control is TextBox)
+                {
+                    control.Text = "";
+                }
+                else if(control is ComboBox)
+                {
+                    if (control.Name.Equals("币种2"))
+                    {
+                        continue;
+                    }
+                    ComboBox cb = (ComboBox)control;
+                    cb.SelectedIndex = 0;
+                }
             }
-            else
-            {
-                init2();
-            }
+
+
             System.Console.WriteLine("______________________________________________");
 
             foreach (Control control in this.Controls)
@@ -1903,8 +1938,112 @@ namespace Personal_deposit_calculator
             System.Console.WriteLine("______________________________________________");
         }
 
+        private void choose3(object sender, EventArgs e)
+        {
+            int y = this.Controls["约定转存选择1"].Location.Y;
+            y += difY;
+
+            move_Label("转存期限种类1", "转存期限种类", X1, y);
+            move_ComboBox("转存期限种类2", X2, y);
+            y += difY;
+            move_Label("约转利率选择1", "约转利率选择", X1, y);
+
+            y += difY;
+
+            move_Label("约转利率1", "约转利率(年利率)", X1, y);
+
+            move_textBox("约转利率2", 0, 0, 50, findC("约转利率1"));
+
+            move_Label("约转利率3", "%", 0, 0, findC("约转利率2"), true);
+            if(this.radioButton4.Checked == true)
+            {
+
+                ComboBox c = (ComboBox)this.Controls["转存期限种类2"];
+                c.Items.Clear();
+                c.Items.Add("选择期限种类");
+                c.Items.Add("三个月");
+                c.Items.Add("半年");
+                c.Items.Add("一年");
+                c.Items.Add("二年");
+                c.Items.Add("三年");
+                c.Items.Add("五年");
+                c.DropDownStyle = ComboBoxStyle.DropDownList;
+                c.SelectedIndexChanged += new System.EventHandler(choose_Rate1);
+                c.SelectedIndex = 0;
+
+                this.flowLayoutPanel2.Location = new Point(X2, y - difY);
+                this.flowLayoutPanel2.Show();
+
+
+
+                y += difY;
+
+                this.buttonCalculate.Location = new Point(X1 + 20, y);
+                this.buttonCalculate.Show();
+                this.buttonReset.Location = new Point(X2 + 50, y);
+                this.buttonReset.Show();
+
+                y += difY;
+                y += difY;
+
+                move_Label("存款利息1", "存款利息", X1, y);
+
+                move_textBox("存款利息2", X2, y);
+
+                move_Label("存款利息3", "元", 0, 0, findC("存款利息2"), true);
+
+                y += difY;
+
+                move_Label("本息合计1", "本息合计", X1, y);
+
+                move_textBox("本息合计2", X2, y);
+
+                move_Label("本息合计3", "元", 0, 0, findC("本息合计2"), true);
+            }
+            else
+            {
+                this.Controls["转存期限种类1"].Hide();
+                this.Controls["转存期限种类2"].Hide();
+                this.Controls["约转利率选择1"].Hide();
+                this.Controls["约转利率1"].Hide();
+                this.Controls["约转利率2"].Hide();
+                this.Controls["约转利率3"].Hide();
+                y = this.Controls["约定转存选择1"].Location.Y;
+                y += difY;
+
+                this.buttonCalculate.Location = new Point(X1 + 20, y);
+                this.buttonCalculate.Show();
+                this.buttonReset.Location = new Point(X2 + 50, y);
+                this.buttonReset.Show();
+
+                y += difY;
+                y += difY;
+
+                move_Label("存款利息1", "存款利息", X1, y);
+
+                move_textBox("存款利息2", X2, y);
+
+                move_Label("存款利息3", "元", 0, 0, findC("存款利息2"), true);
+
+                y += difY;
+
+                move_Label("本息合计1", "本息合计", X1, y);
+
+                move_textBox("本息合计2", X2, y);
+
+                move_Label("本息合计3", "元", 0, 0, findC("本息合计2"), true);
+
+            }
+        }
+
+
+
         private void buttonCalculate_Click(object sender, EventArgs e)
         {
+
+            TextBox tgg = (TextBox)this.Controls["存款期限2"];
+
+
             double money;
             TextBox t1 = (TextBox)this.Controls["存款金额2"];
             
@@ -1920,12 +2059,14 @@ namespace Personal_deposit_calculator
             else
             {
                 MessageBox.Show("请输入正确存款金额");
+                return;
             }
 
             if (money < 0 || money > 1e9)
             {
 
                 MessageBox.Show("请输入正确存款金额");
+                return;
             }
 
             double rate;
@@ -1942,12 +2083,14 @@ namespace Personal_deposit_calculator
             else
             {
                 MessageBox.Show("请输入正确年利率");
+                return;
             }
 
             if (money < 0 || money > 1e9)
             {
 
                 MessageBox.Show("请输入正确年利率");
+                return;
             }
 
 
@@ -1960,34 +2103,380 @@ namespace Personal_deposit_calculator
             ComboBox c2 = (ComboBox)this.Controls["存款种类2"];
             string type2 = (string)c2.SelectedItem;
 
+            TextBox ans1 = (TextBox)this.Controls["存款利息2"];
+            TextBox ans2 = (TextBox)this.Controls["本息合计2"];
+
+
             if (type.Equals("人民币"))
             {
+
+
                 if (type2.Equals("活期"))
                 {
 
+
+                    ComboBox cy1 = (ComboBox)this.Controls["起存日期2"];
+                    int iy1 = (int)cy1.SelectedItem;
+                    ComboBox cm1 = (ComboBox)this.Controls["起存日期4"];
+                    int im1 = (int)cm1.SelectedItem;
+                    ComboBox cd1 = (ComboBox)this.Controls["起存日期6"];
+                    int id1 = (int)cd1.SelectedItem;
+                    if (id1 > 30)
+                    {
+                        id1 = 30;
+                    }
+
+
+                    ComboBox cy2 = (ComboBox)this.Controls["结束日期2"];
+                    int iy2 = (int)cy2.SelectedItem;
+                    ComboBox cm2 = (ComboBox)this.Controls["结束日期4"];
+                    int im2 = (int)cm2.SelectedItem;
+                    ComboBox cd2 = (ComboBox)this.Controls["结束日期6"];
+                    int id2 = (int)cd2.SelectedItem;
+                    if (id2 > 30)
+                    {
+                        id2 = 30;
+                    }
+
+                    int ciy1 = iy2 - iy1;
+                    int cim1 = im2 - im1;
+                    int cid1 = id2 - id1;
+
+
+
+                    double cc = ciy1 * 360.0 + cim1 * 30.0 + cid1 ;
+
+                    if (cc > 360 || cc < 0)
+                    {
+                        MessageBox.Show("活期计算器仅计算一年以内的利息！");
+                        return;
+                    }
+
+                    double ans = money * cc * rate / 360.0 / 100.0;
+                    ans = Math.Round(ans, 2);
+
+                    ans1.Text = Convert.ToString(ans);
+
+                    ans += money;
+
+                    ans2.Text = Convert.ToString(ans);
 
 
 
                 }
                 else if (type2.Equals("定活两便"))
                 {
+                    string d1 = (string)((TextBox)this.Controls["存款期限2"]).Text;
+                    string d2 = (string)((TextBox)this.Controls["存款期限4"]).Text;
+                    string d3 = (string)((TextBox)this.Controls["存款期限6"]).Text;
+
+                    if (d1.Equals(""))
+                    {
+                        d1 = "0";
+
+
+                    }
+                    if (d2.Equals(""))
+                    {
+                        d2 = "0";
+                    }
+                    if (d3.Equals(""))
+                    {
+                        d3 = "0";
+                    }
+                    int year;
+                    bool flag = true;
+                    if (int.TryParse(d1, out year))
+                    {
+
+                    }
+                    int month;
+                    if (int.TryParse(d2, out month))
+                    {
+
+                    }
+
+                    int day;
+                    if (int.TryParse(d3, out day))
+                    {
+
+                    }
+                    if (day > 30)
+                    {
+                        day = 30;
+                    }
+
+                    double ds = year * 360 + month * 30 + day;
+
+                    double ans = money * ds * rate / 360.0 / 100.0;
+                    ans = Math.Round(ans, 2);
+
+                    ans1.Text = Convert.ToString(ans);
+
+                    ans += money;
+
+                    ans2.Text = Convert.ToString(ans);
+
+
+
 
                 }
                 else if (type2.Equals("存本取息"))
                 {
+                    ComboBox cb = (ComboBox)this.Controls["期限种类2"];
+
+                    string s = (string)cb.SelectedItem;
+
+                    int month = 0;
+                    if (s.Equals("一年")){
+                        month = 12;
+                    }
+                    else if (s.Equals("三年"))
+                    {
+                        month = 12 * 3;
+                    }
+                    else if (s.Equals("五年"))
+                    {
+                        month = 12 * 5;
+                    }
+
+
+                    TextBox tb1 = (TextBox)this.Controls["每月利息2"];
+
+                    TextBox tb2 = (TextBox)this.Controls["累计利息2"];
+
+                    TextBox tb3 = (TextBox)this.Controls["本息合计2"];
+
+                    double ans = money * rate / 12.0 / 100.0;
+                    
+
+                    tb1.Text = Convert.ToString(Math.Round(ans,2));
+
+                    ans *= month;
+                    tb2.Text = Convert.ToString(Math.Round(ans, 2));
+
+                    ans += money;
+                    tb3.Text = Convert.ToString(Math.Round(ans, 2));
 
                 }
                 else if (type2.Equals("整存整取"))
                 {
 
+                    if(this.radioButton3.Checked == true)
+                    {
+                        ComboBox cb = (ComboBox)this.Controls["期限种类2"];
+
+                        string s = (string)cb.SelectedItem;
+
+                        int month = 0;
+                        if (s.Equals("三个月"))
+                        {
+                            month = 3;
+                        }
+                        else if (s.Equals("半年"))
+                        {
+                            month = 6;
+                        }
+                        else if (s.Equals("一年"))
+                        {
+                            month = 12;
+                        }
+                        else if (s.Equals("二年"))
+                        {
+                            month = 12 * 2;
+
+                        }
+                        else if (s.Equals("三年"))
+                        {
+                            month = 12 * 3;
+                        }
+                        else if (s.Equals("五年"))
+                        {
+                            month = 12 * 5;
+                        }
+
+                        double ans = money * rate * month / 12.0 / 100.0;
+
+                        ans1.Text = Convert.ToString(Math.Round(ans, 2));
+
+                        ans += money;
+
+                        ans2.Text = Convert.ToString(Math.Round(ans, 2));
+
+
+
+
+                    }
+                    else
+                    {
+                        ComboBox cb = (ComboBox)this.Controls["期限种类2"];
+
+                        string s = (string)cb.SelectedItem;
+
+                        int month = 0;
+                        if (s.Equals("三个月"))
+                        {
+                            month = 3;
+                        }
+                        else if (s.Equals("半年"))
+                        {
+                            month = 6;
+                        }
+                        else if (s.Equals("一年"))
+                        {
+                            month = 12;
+                        }
+                        else if (s.Equals("二年"))
+                        {
+                            month = 12 * 2;
+
+                        }
+                        else if (s.Equals("三年"))
+                        {
+                            month = 12 * 3;
+                        }
+                        else if (s.Equals("五年"))
+                        {
+                            month = 12 * 5;
+                        }
+
+                        double ans = money * rate * month / 12.0 / 100.0;
+                        ans += money;
+
+                        cb = (ComboBox)this.Controls["转存期限种类2"];
+                        s = (string)cb.SelectedItem;
+
+                        month = 0;
+                        if (s.Equals("三个月"))
+                        {
+                            month = 3;
+                        }
+                        else if (s.Equals("半年"))
+                        {
+                            month = 6;
+                        }
+                        else if (s.Equals("一年"))
+                        {
+                            month = 12;
+                        }
+                        else if (s.Equals("二年"))
+                        {
+                            month = 12 * 2;
+
+                        }
+                        else if (s.Equals("三年"))
+                        {
+                            month = 12 * 3;
+                        }
+                        else if (s.Equals("五年"))
+                        {
+                            month = 12 * 5;
+                        }
+                        double rate1;
+                        TextBox t21 = (TextBox)this.Controls["约转利率2"];
+                        string s21 = (string)t21.Text;
+                        if (s21.Equals(""))
+                        {
+                            s21 = "0";
+                        }
+                        if (double.TryParse(s21, out rate1))
+                        {
+
+                        }
+                        else
+                        {
+                            MessageBox.Show("请输入正确约转利率");
+                            return;
+                        }
+                        ans = ans+ ans * rate1 * month / 12.0 / 100.0;
+
+                        ans -= money;
+
+                        ans1.Text = Convert.ToString(Math.Round(ans, 2));
+
+                        ans += money;
+
+                        ans2.Text = Convert.ToString(Math.Round(ans, 2));
+
+                    }
+
+
                 }
                 else if (type2.Equals("零存整取"))
                 {
+                    ComboBox cb = (ComboBox)this.Controls["期限种类2"];
+
+                    string s = (string)cb.SelectedItem;
+
+                    int month = 0;
+                    if (s.Equals("三个月"))
+                    {
+                        month = 3;
+                    }
+                    else if (s.Equals("半年"))
+                    {
+                        month = 6;
+                    }
+                    else if (s.Equals("六个月"))
+                    {
+                        month = 6;
+                    }
+                    else if (s.Equals("一年"))
+                    {
+                        month = 12;
+                    }
+                    else if (s.Equals("二年"))
+                    {
+                        month = 12 * 2;
+
+                    }
+                    else if (s.Equals("三年"))
+                    {
+                        month = 12 * 3;
+                    }
+                    else if (s.Equals("五年"))
+                    {
+                        month = 12 * 5;
+                    }
+
+                    int month0 = month;
+
+                    month = month * (month + 1) / 2;
+
+                    double ans = money * rate * month / 12.0 / 100.0;
+
+                    ans1.Text = Convert.ToString(Math.Round(ans, 2));
+
+                    ans += money * month0;
+
+                    ans2.Text = Convert.ToString(Math.Round(ans, 2));
 
                 }
                 else if (type2.Equals("通知存款"))
                 {
+                    ComboBox cb = (ComboBox)this.Controls["期限种类2"];
 
+                    string s = (string)cb.SelectedItem;
+
+                    int day = 0;
+                    if (s.Equals("一天"))
+                    {
+                        day = 1;
+                    }
+                    else if (s.Equals("七天"))
+                    {
+                        day = 7;
+                    }
+
+
+
+                    double ans = money * rate * day / 360.0 / 100.0;
+
+                    ans1.Text = Convert.ToString(Math.Round(ans, 2));
+
+                    ans += money ;
+
+                    ans2.Text = Convert.ToString(Math.Round(ans, 2));
                 }
                 else
                 {
@@ -2002,11 +2491,116 @@ namespace Personal_deposit_calculator
                 }
                 else 
                 {
+                    ComboBox cb = (ComboBox)this.Controls["期限种类2"];
 
+                    string s = (string)cb.SelectedItem;
+
+                    double month = 0;
+                    if (s.Equals("一个月"))
+                    {
+                        month = 1;
+                    }
+                    else if (s.Equals("三个月"))
+                    {
+                        month = 3;
+                    }
+                    else if (s.Equals("半年"))
+                    {
+                        month = 6;
+                    }
+                    else if (s.Equals("六个月"))
+                    {
+                        month = 6;
+                    }
+                    else if (s.Equals("一年"))
+                    {
+                        month = 12;
+                    }
+                    else if (s.Equals("二年"))
+                    {
+                        month = 12 * 2;
+
+                    }
+                    else if (s.Equals("三年"))
+                    {
+                        month = 12 * 3;
+                    }
+                    else if (s.Equals("五年"))
+                    {
+                        month = 12 * 5;
+                    }
+                    else if (s.Equals("七天通知"))
+                    {
+                        month = 24;
+                    }
+
+
+                    double ans = money * rate * month / 12.0 / 100.0;
+
+                    ans1.Text = Convert.ToString(Math.Round(ans, 2));
+
+                    ans += money ;
+
+                    ans2.Text = Convert.ToString(Math.Round(ans, 2));
                 }
 
             }
 
         }
+        
+        private void choose_Rate1(Object sender,EventArgs args)
+        {
+            
+            TextBox r = (TextBox)this.Controls["约转利率2"];
+            ComboBox c2 = (ComboBox)this.Controls["转存期限种类2"];
+            string s2 = (string)c2.SelectedItem;
+            if(this.radioButton5.Checked == false)
+            {
+
+                r.ReadOnly = false;
+                return;
+            }
+            else
+            {
+                r.ReadOnly = true;
+            }
+            if (s2.Equals("三个月"))
+            {
+                r.Text = "1.35";
+            }
+            else if (s2.Equals("半年"))
+            {
+                r.Text = "1.55";
+            }
+            else if (s2.Equals("一年"))
+            {
+                r.Text = "1.75";
+            }
+            else if (s2.Equals("二年"))
+            {
+                r.Text = "2.25";
+            }
+            else if (s2.Equals("三年"))
+            {
+                r.Text = "2.75";
+            }
+            else if (s2.Equals("五年"))
+            {
+                r.Text = "2.75";
+            }
+            else
+            {
+                r.Text = "";
+
+            }
+
+
+        }
+
+        public void kkk (Object sender, EventArgs args)
+        {
+            MessageBox.Show("hhhh");
+        }
+
     }
 }

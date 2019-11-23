@@ -29,6 +29,13 @@ namespace Personal_deposit_calculator
         {
             this.Size = new Size(300, 500);
 
+            move_textBox("存款利率2", 0, 0, 50);
+
+            move_textBox("存款期限2", 0, 0, 50);
+            move_textBox("存款期限4", 0, 0, 50);
+            move_textBox("存款期限6", 0, 0, 50);
+            move_ComboBox("期限种类2", 0, 0);
+
             this.label.Name = "标题";
             this.label.Location = new Point((this.Size.Width - this.label.Size.Width) / 2, 10);
             this.label.Show();
@@ -60,6 +67,7 @@ namespace Personal_deposit_calculator
 
         private void addition1()
         {
+
             int y = 100;
             move_ComboBox("起存日期2", X2, y, 60);
             ComboBox c1 = (ComboBox)findC("起存日期2");
@@ -197,6 +205,12 @@ namespace Personal_deposit_calculator
         {
             foreach (Control control in this.Controls)
             {
+                string name = control.Name;
+                if(name.Equals("label") || name.Equals("币种1")|| name.Equals("币种2")||name.Equals("Form2") )
+                {
+                    continue;
+                }
+
                 control.Hide();
             }
         }
@@ -243,9 +257,9 @@ namespace Personal_deposit_calculator
 
 
             y += difY;
-            create_Label("存款金额1", "存款金额", x1, y);
-            create_TextBox("存款金额2", x2, y);
-            create_Label("存款金额3", "元", 0, 0, findC("存款金额2"), true);
+            move_Label("存款金额1", "存款金额", x1, y);
+            move_textBox("存款金额2", x2, y);
+            move_Label("存款金额3", "元", 0, 0, findC("存款金额2"), true);
 
 
             c1.SelectedIndexChanged += new System.EventHandler(choose1);
@@ -656,7 +670,10 @@ namespace Personal_deposit_calculator
                 }
                 c.Items.Clear();
                 c.Items.Add("选择期限种类");
+                c.Items.Add("三个月");
+                c.Items.Add("半年");
                 c.Items.Add("一年");
+                c.Items.Add("二年");
                 c.Items.Add("三年");
                 c.Items.Add("五年");
                 index = Math.Min(index, c.Items.Count - 1);
@@ -835,9 +852,8 @@ namespace Personal_deposit_calculator
                 }
                 c.Items.Clear();
                 c.Items.Add("选择期限种类");
-                c.Items.Add("一年");
-                c.Items.Add("三年");
-                c.Items.Add("五年");
+                c.Items.Add("一天");
+                c.Items.Add("七天");
                 index = Math.Min(index, c.Items.Count - 1);
                 c.SelectedIndex = index;
 
@@ -999,11 +1015,11 @@ namespace Personal_deposit_calculator
 
             if (type.Equals("活期"))
             {
-                create_Label("存款金额1", "存款金额", X1, y);
+                move_Label("存款金额1", "存款金额", X1, y);
                 use.Add("存款金额1");
-                create_TextBox("存款金额2", X2, y);
+                move_textBox("存款金额2", X2, y);
                 use.Add("存款金额2");
-                create_Label("存款金额3", "元", 0, 0, findC("存款金额2"), true);
+                move_Label("存款金额3", "元", 0, 0, findC("存款金额2"), true);
                 use.Add("存款金额3");
 
                 y += difY;
@@ -1259,7 +1275,14 @@ namespace Personal_deposit_calculator
             }
             comboBox.Location = new Point(x, y);
             this.Controls.Add(comboBox);
-
+            if (name.Equals("期限种类2"))
+            {
+                comboBox.SelectedIndexChanged += new System.EventHandler(choose_Rate);
+            }
+            if (name.Equals("存款种类2"))
+            {
+                comboBox.SelectedIndexChanged += new System.EventHandler(choose_Rate);
+            }
         }
 
 
@@ -1310,20 +1333,679 @@ namespace Personal_deposit_calculator
            
             if (this.radioButton1.Checked)
             {
+
                 t.ReadOnly = true;
+                ComboBox c = (ComboBox)this.Controls["币种2"];
+                TextBox r = (TextBox)this.Controls["存款利率2"];
+
+                string type = (string)c.SelectedItem;
+                if (type.Equals("人民币"))
+                {
+                    ComboBox c1 = (ComboBox)this.Controls["存款种类2"];
+                    string s1 = (string)c1.SelectedItem;
+                    if (s1.Equals("活期")){
+                        r.Text = "0.30";
+                    }
+                    else if (s1.Equals("定活两便"))
+                    {
+                        string d1 = (string)((TextBox)this.Controls["存款期限2"]).Text;
+                        string d2 = (string)((TextBox)this.Controls["存款期限4"]).Text;
+                        string d3 = (string)((TextBox)this.Controls["存款期限6"]).Text;
+
+                        if (d1.Equals(""))
+                        {
+                            d1 = "0";
+                            
+                            
+                        }
+                        if (d2.Equals(""))
+                        {
+                            d2 = "0";
+                        }
+                        if (d3.Equals(""))
+                        {
+                            d3 = "0";
+                        }
+                        int year;
+                        bool flag = true;
+                        if (int.TryParse(d1, out year))
+                        {
+
+                        }
+                        else
+                        {
+                            MessageBox.Show("请输入正确年份");
+                            flag = false;
+                        }
+                        int month;
+                        if (int.TryParse(d2, out month))
+                        {
+
+                        }
+                        else
+                        {
+                            MessageBox.Show("请输入正确月份");
+                            flag = false;
+                        }
+
+                        int day;
+                        if (int.TryParse(d3, out day))
+                        {
+
+                        }
+                        else
+                        {
+                            MessageBox.Show("请输入正确日数");
+                            flag = false;
+                        }
+
+                        if(flag == false)
+                        {
+                            return;
+                        }
+
+
+                        if (year < 0 || year > 100)
+                        {
+                            MessageBox.Show("请输入正确年份");
+                            flag = false;
+
+                        }
+                        else if (month < 0 || month > 11)
+                        {
+                            MessageBox.Show("请输入正确月份");
+                            flag = false;
+
+                        }
+                        else if (day < 0 || day > 31)
+                        {
+                            MessageBox.Show("请输入正确日数");
+                            flag = false;
+
+                        }
+
+                        if (flag == false)
+                        {
+                            r.Text = "";
+                            return;
+                        }
+
+
+                        if (year > 0)
+                        {
+                            r.Text = "1.05";
+                        }
+                        else
+                        {
+                            if (month < 3 || (month==3&&day==0))
+                            {
+                                r.Text = "0.3";
+                            }
+                            else if (month < 6 || (month == 6 && day == 0))
+                            {
+                                r.Text = "0.81";
+                            }
+                            else 
+                            {
+                                r.Text = "0.93";
+                            }
+                        }
+
+
+
+                    }
+                    else if(s1.Equals("存本取息"))
+                    {
+                        ComboBox c2 = (ComboBox)this.Controls["期限种类2"];
+                        string s2 = (string)c2.SelectedItem;
+                        if (s2.Equals("一年"))
+                        {
+                            r.Text = "1.35";
+                        }
+                        else if (s2.Equals("三年"))
+                        {
+                            r.Text = "1.55";
+                        }
+                        else if (s2.Equals("五年"))
+                        {
+                            r.Text = "1.55";
+                        }
+                        else
+                        {
+                            r.Text = "";
+
+                        }
+
+
+                    }
+                    else if (s1.Equals("整存整取"))
+                    {
+                        ComboBox c2 = (ComboBox)this.Controls["期限种类2"];
+                        string s2 = (string)c2.SelectedItem;
+                        if (s2.Equals("三个月"))
+                        {
+                            r.Text = "1.35";
+                        }
+                        else if (s2.Equals("半年"))
+                        {
+                            r.Text = "1.55";
+                        }
+                        else if (s2.Equals("一年"))
+                        {
+                            r.Text = "1.75";
+                        }
+                        else if (s2.Equals("二年"))
+                        {
+                            r.Text = "2.25";
+                        }
+                        else if (s2.Equals("三年"))
+                        {
+                            r.Text = "2.75";
+                        }
+                        else if (s2.Equals("五年"))
+                        {
+                            r.Text = "2.75";
+                        }
+                        else
+                        {
+                            r.Text = "";
+
+                        }
+
+                    }
+                    else if (s1.Equals("零存整取"))
+                    {
+                        ComboBox c2 = (ComboBox)this.Controls["期限种类2"];
+                        string s2 = (string)c2.SelectedItem;
+                        if (s2.Equals("一年"))
+                        {
+                            r.Text = "1.35";
+                        }
+                        else if (s2.Equals("三年"))
+                        {
+                            r.Text = "1.55";
+                        }
+                        else if (s2.Equals("五年"))
+                        {
+                            r.Text = "1.55";
+                        }
+                        else
+                        {
+                            r.Text = "";
+
+                        }
+
+
+                    }
+                    else if (s1.Equals("通知存款"))
+                    {
+                        ComboBox c2 = (ComboBox)this.Controls["期限种类2"];
+                        string s2 = (string)c2.SelectedItem;
+                        if (s2.Equals("一天"))
+                        {
+                            r.Text = "0.55";
+                        }
+                        
+                        else if (s2.Equals("七天"))
+                        {
+                            r.Text = "1.10";
+                        }
+                        else
+                        {
+                            r.Text = "";
+
+                        }
+
+
+                    }
+                }
+                else
+                {
+                    ComboBox c2 = (ComboBox)this.Controls["期限种类2"];
+                    string s2 = (string)c2.SelectedItem;
+                    if (s2.Equals("活期"))
+                    {
+                        if (type.Equals("英镑"))
+                        {
+                            r.Text = "0.05";
+
+                        }
+                        else if (type.Equals("澳大利亚元"))
+                        {
+
+                            r.Text = "0.2";
+
+                        }
+                        else if (type.Equals("加拿大元"))
+                        {
+                            r.Text = "0.01";
+
+                        }
+                        else if (type.Equals("美元"))
+                        {
+
+                            r.Text = "0.05";
+                        }
+                        else if (type.Equals("日元"))
+                        {
+                            r.Text = "0.0001";
+
+                        }
+                        else if (type.Equals("欧元"))
+                        {
+                            r.Text = "0.005";
+
+                        }
+                        else if (type.Equals("瑞士法郎"))
+                        {
+                            r.Text = "0.0001";
+
+                        }
+                        else if (type.Equals("港币"))
+                        {
+                            r.Text = "0.01";
+
+                        }
+                    }
+
+                    else if (s2.Equals("一个月"))
+                    {
+                        if (type.Equals("英镑"))
+                        {
+                            r.Text = "0.1";
+
+                        }
+                        else if (type.Equals("澳大利亚元"))
+                        {
+                            r.Text = "1.2";
+
+                        }
+                        else if (type.Equals("加拿大元"))
+                        {
+                            r.Text = "0.05";
+
+                        }
+                        else if (type.Equals("美元"))
+                        {
+                            r.Text = "0.2";
+
+                        }
+                        else if (type.Equals("日元"))
+                        {
+                            r.Text = "0.01";
+
+                        }
+                        else if (type.Equals("欧元"))
+                        {
+                            r.Text = "0.03";
+
+                        }
+                        else if (type.Equals("瑞士法郎"))
+                        {
+                            r.Text = "0.01";
+
+                        }
+                        else if (type.Equals("港币"))
+                        {
+                            r.Text = "0.1";
+
+                        }
+                    }
+                    if (s2.Equals("三个月"))
+                    {
+                        if (type.Equals("英镑"))
+                        {
+
+                            r.Text = "0.1";
+                        }
+                        else if (type.Equals("澳大利亚元"))
+                        {
+                            r.Text = "1.3";
+
+                        }
+                        else if (type.Equals("加拿大元"))
+                        {
+                            r.Text = "0.05";
+
+                        }
+                        else if (type.Equals("美元"))
+                        {
+
+                            r.Text = "0.3";
+                        }
+                        else if (type.Equals("日元"))
+                        {
+                            r.Text = "0.01";
+
+                        }
+                        else if (type.Equals("欧元"))
+                        {
+                            r.Text = "0.05";
+
+                        }
+                        else if (type.Equals("瑞士法郎"))
+                        {
+                            r.Text = "0.01";
+
+                        }
+                        else if (type.Equals("港币"))
+                        {
+                            r.Text = "0.25";
+
+                        }
+                    }
+                    if (s2.Equals("六个月"))
+                    {
+                        if (type.Equals("英镑"))
+                        {
+
+                            r.Text = "0.1";
+                        }
+                        else if (type.Equals("澳大利亚元"))
+                        {
+                            r.Text = "1.3";
+
+                        }
+                        else if (type.Equals("加拿大元"))
+                        {
+                            r.Text = "0.3";
+
+                        }
+                        else if (type.Equals("美元"))
+                        {
+
+                            r.Text = "0.5";
+                        }
+                        else if (type.Equals("日元"))
+                        {
+                            r.Text = "0.01";
+
+                        }
+                        else if (type.Equals("欧元"))
+                        {
+                            r.Text = "0.15";
+
+                        }
+                        else if (type.Equals("瑞士法郎"))
+                        {
+                            r.Text = "0.01";
+
+                        }
+                        else if (type.Equals("港币"))
+                        {
+                            r.Text = "0.5";
+
+                        }
+                    }
+                    if (s2.Equals("一年"))
+                    {
+                        if (type.Equals("英镑"))
+                        {
+
+                            r.Text = "0.1";
+                        }
+                        else if (type.Equals("澳大利亚元"))
+                        {
+                            r.Text = "1.5";
+
+                        }
+                        else if (type.Equals("加拿大元"))
+                        {
+                            r.Text = "0.4";
+
+                        }
+                        else if (type.Equals("美元"))
+                        {
+
+                            r.Text = "0.8";
+                        }
+                        else if (type.Equals("日元"))
+                        {
+                            r.Text = "0.01";
+
+                        }
+                        else if (type.Equals("欧元"))
+                        {
+                            r.Text = "0.2";
+
+                        }
+                        else if (type.Equals("瑞士法郎"))
+                        {
+                            r.Text = "0.01";
+
+                        }
+                        else if (type.Equals("港币"))
+                        {
+                            r.Text = "0.7";
+
+                        }
+                    }
+                    if (s2.Equals("二年"))
+                    {
+                        if (type.Equals("英镑"))
+                        {
+
+                            r.Text = "0.1";
+                        }
+                        else if (type.Equals("澳大利亚元"))
+                        {
+                            r.Text = "1.5";
+
+                        }
+                        else if (type.Equals("加拿大元"))
+                        {
+                            r.Text = "0.4";
+
+                        }
+                        else if (type.Equals("美元"))
+                        {
+
+                            r.Text = "0.8";
+                        }
+                        else if (type.Equals("日元"))
+                        {
+                            r.Text = "0.01";
+
+                        }
+                        else if (type.Equals("欧元"))
+                        {
+                            r.Text = "0.25";
+
+                        }
+                        else if (type.Equals("瑞士法郎"))
+                        {
+                            r.Text = "0.01";
+
+                        }
+                        else if (type.Equals("港币"))
+                        {
+                            r.Text = "0.75";
+
+                        }
+                    }
+                    if (s2.Equals("七天通知"))
+                    {
+                        if (type.Equals("英镑"))
+                        {
+
+                            r.Text = "0.05";
+                        }
+                        else if (type.Equals("澳大利亚元"))
+                        {
+                            r.Text = "0.25";
+
+                        }
+                        else if (type.Equals("加拿大元"))
+                        {
+                            r.Text = "0.05";
+
+                        }
+                        else if (type.Equals("美元"))
+                        {
+
+                            r.Text = "0.05";
+                        }
+                        else if (type.Equals("日元"))
+                        {
+                            r.Text = "0.0005";
+
+                        }
+                        else if (type.Equals("欧元"))
+                        {
+                            r.Text = "0.005";
+
+                        }
+                        else if (type.Equals("瑞士法郎"))
+                        {
+                            r.Text = "0.0005";
+
+                        }
+                        else if (type.Equals("港币"))
+                        {
+                            r.Text = "0.01";
+
+                        }
+                    }
+
+
+                }
+
             }
             else
             {
                 t.ReadOnly = false;
             }
         }    
+
+        private void choose_Rate(object sender,EventArgs e)
+        {
+            this.radioButton2.Checked = true;
+            this.radioButton1.Checked = true;
+        }
         private void buttonReset_Click(object sender, EventArgs e)
         {
+            ComboBox c = (ComboBox)this.Controls["币种2"];
+            string type = (string)c.SelectedItem;
+            if (type.Equals("人民币"))
+            {
+                init1();
+            }
+            else
+            {
+                init2();
+            }
+            System.Console.WriteLine("______________________________________________");
 
+            foreach (Control control in this.Controls)
+            {
+                System.Console.WriteLine(control.Name);
+            }
+            System.Console.WriteLine("______________________________________________");
         }
 
         private void buttonCalculate_Click(object sender, EventArgs e)
         {
+            double money;
+            TextBox t1 = (TextBox)this.Controls["存款金额2"];
+            
+            string s1 = (string)t1.Text;
+            if (s1.Equals(""))
+            {
+                s1 = "0";
+            }
+            if(double.TryParse(s1,out money))
+            {
+
+            }
+            else
+            {
+                MessageBox.Show("请输入正确存款金额");
+            }
+
+            if (money < 0 || money > 1e9)
+            {
+
+                MessageBox.Show("请输入正确存款金额");
+            }
+
+            double rate;
+            TextBox t2 = (TextBox)this.Controls["存款利率2"];
+            string s2 = (string)t2.Text;
+            if (s2.Equals(""))
+            {
+                s2 = "0";
+            }
+            if (double.TryParse(s2, out rate))
+            {
+
+            }
+            else
+            {
+                MessageBox.Show("请输入正确年利率");
+            }
+
+            if (money < 0 || money > 1e9)
+            {
+
+                MessageBox.Show("请输入正确年利率");
+            }
+
+
+
+            ComboBox c1 = (ComboBox)this.Controls["币种2"];
+            string type = (string)c1.SelectedItem;
+
+
+
+            ComboBox c2 = (ComboBox)this.Controls["存款种类2"];
+            string type2 = (string)c2.SelectedItem;
+
+            if (type.Equals("人民币"))
+            {
+                if (type2.Equals("活期"))
+                {
+
+
+
+
+                }
+                else if (type2.Equals("定活两便"))
+                {
+
+                }
+                else if (type2.Equals("存本取息"))
+                {
+
+                }
+                else if (type2.Equals("整存整取"))
+                {
+
+                }
+                else if (type2.Equals("零存整取"))
+                {
+
+                }
+                else if (type2.Equals("通知存款"))
+                {
+
+                }
+                else
+                {
+
+                }
+            }
+            else
+            {
+                if (type2.Equals("活期"))
+                {
+
+                }
+                else 
+                {
+
+                }
+
+            }
 
         }
     }
